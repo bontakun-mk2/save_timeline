@@ -1,0 +1,27 @@
+# -*- coding: utf-8 -*-
+require 'json'
+
+class Message
+  def __get_raw_value
+    @value
+  end
+end
+
+Plugin.create(:save_timeline) do
+  
+  logdir = "#{ENV['HOME']}/.mikutter/plugin/save_timeline/log"
+  
+  on_update do | service, messages |
+    File.open("#{logdir}/#{BOOT_TIME.strftime("%y%m%d%H%M%S")}.#{service.user || "default"}", "a") do |f| 
+      f.flock(File::LOCK_EX)
+      messages.each do |msg|
+        f.puts JSON.dump msg.__get_raw_value rescue puts $!
+      end
+    end
+  end
+  
+
+#  on_direct_messages do |service, dms|
+#  end
+
+end

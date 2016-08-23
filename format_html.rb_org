@@ -1,0 +1,33 @@
+# -*- coding: UTF-8 -*-
+require 'json'
+
+puts <<END
+<html><head>
+  <title>Tweets</title>
+  <style>
+    table {
+      border: #39f 4px solid;
+    }
+    td {
+      border: #69f 1px solid;
+    }
+    table {
+      color : #333;
+    }
+  </style>
+</head>
+<body>
+<table>
+<thead>
+<tr><th>At</th><th>User</th><th>Message</th></tr>
+</thead>
+<tbody>
+END
+
+ARGF.each do |line|
+  obj = JSON.load(line)
+  puts "<tr><td>#{obj["created_at"]}</td><td>#{obj["user"]}</td><td>#{obj["message"]}</td></tr>"
+end
+puts "</tbody>"
+puts "</table>"
+puts "</body></html>"
