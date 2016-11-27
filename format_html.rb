@@ -98,6 +98,7 @@ def header
     }
     td {
       border: #69f 1px solid;
+      word-wrap: break-word;
     }
     table {
       color : #333;
@@ -125,7 +126,7 @@ def message(obj)
   #  puts jj(obj)
   return if obj[:system]
   #puts "<tr><td>#{obj["created"]}</td><td>#{obj["user"]}</td><td>#{obj["message"]}"
-  puts "<tr><td>"
+  puts "<tr><td><div>"
   if not obj.include?(:retweeted_status)
     puts %Q(<a href="https://twitter.com/#{obj[:user]}/status/#{obj[:id]}" TARGET="_blank" >#{obj[:created]}</a><br><br>)
 #    puts %Q(<a href="https://twitter.com/intent/like?tweet_id=#{obj[:id]}" TARGET="_blank" >Favo</a>)
@@ -177,7 +178,7 @@ def message(obj)
   4.times do |i| puts %Q(<img src="img/#{tweet[:id]}_#{i}.png" style="#{imgstyle}">) end
 #  4.times do |i| puts %Q(<img src="img/#{tweet[:id]}_#{i}.png" style="width:auto;max-height:800px;" >) end
 #  4.times do |i| puts %Q(<img src="img/#{tweet[:id]}_#{i}.png" style="height:auto;max-width:500px;" >) end
-  puts "</td></tr>"
+  puts "</div></td></tr>"
 #=end
 end
 
