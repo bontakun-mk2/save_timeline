@@ -10,6 +10,7 @@ end
 Plugin.create(:save_timeline) do
   
   logdir = "#{ENV['HOME']}/timeline"
+  FileUtils.mkdir_p(logdir) unless FileTest.exist?(logdir)
   user = service.user || "default" rescue user = "default"
   
   on_update do | service, messages |
