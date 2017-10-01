@@ -128,7 +128,8 @@ def message(obj)
   #puts "<tr><td>#{obj["created"]}</td><td>#{obj["user"]}</td><td>#{obj["message"]}"
   puts "<tr><td><div>"
   if not obj.include?(:retweeted_status)
-    puts %Q(<a href="https://twitter.com/#{obj[:user]}/status/#{obj[:id]}" TARGET="_blank" >#{obj[:created]}</a><br><br>)
+    created = Time.parse(obj[:created]).strftime("'%y %m/%d %H:%M:%S")
+    puts %Q(<a href="https://twitter.com/#{obj[:user]}/status/#{obj[:id]}" TARGET="_blank" >#{created}</a><br>)
 #    puts %Q(<a href="https://twitter.com/intent/like?tweet_id=#{obj[:id]}" TARGET="_blank" >Favo</a>)
     if obj[:favorited] or obj[:retweeted]
       puts "<br> fav:", obj[:favorited], "ret:", obj[:retweeted] end
@@ -142,8 +143,8 @@ def message(obj)
   else
     tweet = obj[:retweeted_status]
 #    puts tweet[:created_at], "<br>"
-    puts Time.parse(tweet[:created_at]).strftime("'%y %m/%d %H:%M:%S"), "<br>"
-    puts %Q(<a href="https://twitter.com/#{tweet[:user][:screen_name]}/status/#{tweet[:id]}" TARGET="_blank" >#{tweet[:created_at]}</a><br>)
+    created = Time.parse(tweet[:created_at]).strftime("'%y %m/%d %H:%M:%S")
+    puts %Q(<a href="https://twitter.com/#{tweet[:user][:screen_name]}/status/#{tweet[:id]}" TARGET="_blank" >#{created}</a><br>)
 #    puts %Q(<a href="https://twitter.com/intent/like?tweet_id=#{tweet[:id]}" TARGET="_blank" >Favo</a>)
     if obj[:favorited] or obj[:retweeted] or tweet[:favorited] or tweet[:retweeted]
       puts "<br> fav:", tweet[:favorited], "ret:", tweet[:retweeted]
