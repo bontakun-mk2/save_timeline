@@ -113,7 +113,7 @@ def header
 <body>
 <table>
 <thead>
-<tr><th width="60">At</th><th width="100">User</th><th>Message</th></tr>
+<tr><th width="80">At</th><th width="100">User</th><th>Message</th></tr>
 </thead>
 <tbody>
 END
@@ -130,7 +130,7 @@ def message(obj)
   puts "<tr><td><div style=\"font-size:80%\">"
   if not obj.include?(:retweeted_status)
     #created = Time.parse(obj[:created]).strftime("'%y %m/%d %H:%M:%S")
-    jst_time = tzTokyo.utc_to_local(Time.parse(obj[:created_at])).strftime("'%y %m/%d %H:%M:%S")
+    jst_time = Time.parse(obj[:created_at]).in_time_zone("Asia/Tokyo").strftime("'%y %m/%d %H:%M:%S")
     puts %Q(<a href="https://twitter.com/#{obj[:user]}/status/#{obj[:id]}" TARGET="_blank" >#{jst_time}</a><br>)
 #    puts %Q(<a href="https://twitter.com/intent/like?tweet_id=#{obj[:id]}" TARGET="_blank" >Favo</a>)
     if obj[:favorited] or obj[:retweeted]
@@ -144,7 +144,7 @@ def message(obj)
     tweet = obj
   else
     tweet = obj[:retweeted_status]
-    jst_time = tzTokyo.utc_to_local(Time.parse(tweet[:created_at])).strftime("'%y %m/%d %H:%M:%S")
+    jst_time = Time.parse(tweet[:created_at]).in_time_zone("Asia/Tokyo").strftime("'%y %m/%d %H:%M:%S")
     puts %Q(<a href="https://twitter.com/#{tweet[:user][:screen_name]}/status/#{tweet[:id]}" TARGET="_blank" >#{jst_time}</a><br>)
     if obj[:favorited] or obj[:retweeted] or tweet[:favorited] or tweet[:retweeted]
       puts "<br> fav:", tweet[:favorited], "ret:", tweet[:retweeted]
