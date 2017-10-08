@@ -1,3 +1,4 @@
+#! /usr/bin/env ruby
 # -*- coding: utf-8 -*-
 require 'json'
 # Rubygemsを使用することを明示
@@ -82,7 +83,7 @@ end
 =end
 
 def url(url)
-  puts %Q(<a href="#{url}" TARGET="_blank" >#{url}</a>) end
+  %Q(<a href="#{url}" TARGET="_blank" >#{url}</a>) end
 def img(url)
   puts "<img src=\"#{url}\">" end
 def simg(url)
@@ -112,7 +113,7 @@ def header
 <body>
 <table>
 <thead>
-<tr><th width="100">At</th><th width="150">User</th><th>Message</th></tr>
+<tr><th width="60">At</th><th width="100">User</th><th>Message</th></tr>
 </thead>
 <tbody>
 END
@@ -126,14 +127,15 @@ def message(obj)
   #  puts jj(obj)
   return if obj[:system]
   #puts "<tr><td>#{obj["created"]}</td><td>#{obj["user"]}</td><td>#{obj["message"]}"
-  puts "<tr><td><div>"
+  puts "<tr><td><div style=\"font-size:80%\">"
   if not obj.include?(:retweeted_status)
-    created = Time.parse(obj[:created]).strftime("'%y %m/%d %H:%M:%S")
-    puts %Q(<a href="https://twitter.com/#{obj[:user]}/status/#{obj[:id]}" TARGET="_blank" >#{created}</a><br>)
+    #created = Time.parse(obj[:created]).strftime("'%y %m/%d %H:%M:%S")
+    jst_time = tzTokyo.utc_to_local(Time.parse(obj[:created_at])).strftime("'%y %m/%d %H:%M:%S")
+    puts %Q(<a href="https://twitter.com/#{obj[:user]}/status/#{obj[:id]}" TARGET="_blank" >#{jst_time}</a><br>)
 #    puts %Q(<a href="https://twitter.com/intent/like?tweet_id=#{obj[:id]}" TARGET="_blank" >Favo</a>)
     if obj[:favorited] or obj[:retweeted]
       puts "<br> fav:", obj[:favorited], "ret:", obj[:retweeted] end
-    puts "</td><td>"
+    puts "</td><td style=\"font-size:80%\">"
     puts obj[:user], "<br>"
     img("https://twitter.com/#{obj[:user]}/profile_image")
     puts "</td><td>"
@@ -142,40 +144,37 @@ def message(obj)
     tweet = obj
   else
     tweet = obj[:retweeted_status]
-#    puts tweet[:created_at], "<br>"
-    created = Time.parse(tweet[:created_at]).strftime("'%y %m/%d %H:%M:%S")
-    puts %Q(<a href="https://twitter.com/#{tweet[:user][:screen_name]}/status/#{tweet[:id]}" TARGET="_blank" >#{created}</a><br>)
-#    puts %Q(<a href="https://twitter.com/intent/like?tweet_id=#{tweet[:id]}" TARGET="_blank" >Favo</a>)
+    jst_time = tzTokyo.utc_to_local(Time.parse(tweet[:created_at])).strftime("'%y %m/%d %H:%M:%S")
+    puts %Q(<a href="https://twitter.com/#{tweet[:user][:screen_name]}/status/#{tweet[:id]}" TARGET="_blank" >#{jst_time}</a><br>)
     if obj[:favorited] or obj[:retweeted] or tweet[:favorited] or tweet[:retweeted]
       puts "<br> fav:", tweet[:favorited], "ret:", tweet[:retweeted]
       puts "<br> rtfav:", obj[:favorited], "rtret:", obj[:retweeted]
     end
-    puts "</td><td>"
+    puts "</td><td style=\"font-size:80%\">"
     puts tweet[:user][:name], "<br>", tweet[:user][:screen_name], "<br>"
     img(tweet[:user][:profile_image_url])
-    puts "<br> retweet: #{obj[:user]}<br>"
+    puts "<br>#{obj[:user]}<br>"
+#    puts "<br> retweet: #{obj[:user]}<br>"
     img("https://twitter.com/#{obj[:user]}/profile_image?size=mini")
     puts "</td><td>"
     puts tweet[:text].gsub(/\n/, "<br>\n"), "<br>"
   end
 
   tweet[:entities][:urls].each do |u|
-    puts "urls"
-    puts u[:display_url]; url(u[:expanded_url]); puts "<br>"
-    puts %Q(<a href="#{u[:expanded_url]}" TARGET="_blank" >#{u[:display_url]}</a>); puts "<br>"
+    puts "urls", %Q(<a href="#{u[:expanded_url]}" TARGET="_blank" >#{u[:display_url]}</a>), "<br>"
   end
   if tweet.include?(:extended_entities)
     tweet[:extended_entities][:media].each do |m|
       if m.include?(:media_url)
         if m[:type] == "photo"
-          puts m[:display_url], m[:media_url], m[:type], "<br>"
+          puts m[:type], m[:display_url], url(m[:media_url]), "<br>"
         else
-          puts url("http://#{m[:display_url]}"), m[:media_url], m[:type], "<br>"
+          puts "!",m[:type], url("http://#{m[:display_url]}"), m[:media_url], "<br>"
         end
         simg(m[:media_url]); puts "<br>"
   end end end
 #  4.times do |i| puts "<img src=\"img/#{tweet[:id_str]}_#{i}.png\">" end
-  imgstyle = MOBILE ? "height:auto;max-width:500px;" : "width:auto;max-height:800px;"
+  imgstyle = MOBILE ? "height:auto;max-width:500px;" : "width:auto;max-width:100%;max-height:800px;"
   4.times do |i| puts %Q(<img src="img/#{tweet[:id]}_#{i}.png" style="#{imgstyle}">) end
 #  4.times do |i| puts %Q(<img src="img/#{tweet[:id]}_#{i}.png" style="width:auto;max-height:800px;" >) end
 #  4.times do |i| puts %Q(<img src="img/#{tweet[:id]}_#{i}.png" style="height:auto;max-width:500px;" >) end
