@@ -128,37 +128,36 @@ def message(obj)
   return if obj[:system]
   #puts "<tr><td>#{obj["created"]}</td><td>#{obj["user"]}</td><td>#{obj["message"]}"
   puts "<tr><td><div style=\"font-size:80%\">"
-  if not obj.include?(:retweeted_status)
-    #created = Time.parse(obj[:created]).strftime("'%y %m/%d %H:%M:%S")
-    jst_time = Time.parse(obj[:created_at]).in_time_zone("Asia/Tokyo").strftime("'%y %m/%d %H:%M:%S")
-    puts %Q(<a href="https://twitter.com/#{obj[:user]}/status/#{obj[:id]}" TARGET="_blank" >#{jst_time}</a><br>)
-#    puts %Q(<a href="https://twitter.com/intent/like?tweet_id=#{obj[:id]}" TARGET="_blank" >Favo</a>)
-    if obj[:favorited] or obj[:retweeted]
-      puts "<br> fav:", obj[:favorited], "ret:", obj[:retweeted] end
-    puts "</td><td style=\"font-size:80%\">"
-    puts obj[:user], "<br>"
-    img("https://twitter.com/#{obj[:user]}/profile_image")
-    puts "</td><td>"
-    puts obj[:message].gsub(/\n/, "<br>\n"), "<br>"
 
+  if not obj.include?(:retweeted_status)
     tweet = obj
+    # user_name
+    screen_name = obj[:user]
   else
     tweet = obj[:retweeted_status]
-    jst_time = Time.parse(tweet[:created_at]).in_time_zone("Asia/Tokyo").strftime("'%y %m/%d %H:%M:%S")
-    puts %Q(<a href="https://twitter.com/#{tweet[:user][:screen_name]}/status/#{tweet[:id]}" TARGET="_blank" >#{jst_time}</a><br>)
-    if obj[:favorited] or obj[:retweeted] or tweet[:favorited] or tweet[:retweeted]
-      puts "<br> fav:", tweet[:favorited], "ret:", tweet[:retweeted]
-      puts "<br> rtfav:", obj[:favorited], "rtret:", obj[:retweeted]
-    end
-    puts "</td><td style=\"font-size:80%\">"
-    puts tweet[:user][:name], "<br>", tweet[:user][:screen_name], "<br>"
-    img(tweet[:user][:profile_image_url])
-    puts "<br>#{obj[:user]}<br>"
-#    puts "<br> retweet: #{obj[:user]}<br>"
-    img("https://twitter.com/#{obj[:user]}/profile_image?size=mini")
-    puts "</td><td>"
-    puts tweet[:text].gsub(/\n/, "<br>\n"), "<br>"
+    user_name = tweet[:user][:name]
+    screen_name = tweet[:user][:screen_name]
   end
+
+  jst_time = Time.parse(tweet[:created_at]).in_time_zone("Asia/Tokyo").strftime("'%y %m/%d %H:%M:%S")
+  puts %Q(<a href="https://twitter.com/#{screen_name}/status/#{tweet[:id]}  " TARGET="_blank" >#{jst_time}</a><br>)
+  #puts %Q(<a href="https://twitter.com/intent/like?tweet_id=#{tweet[:id]}" TARGET="_blank" >Favo</a>)
+  # retweet_count":0,"favorite_count":0
+
+  puts "</td><td style=\"font-size:80%\">"
+  puts screen_name, "<br>"
+  puts user_name, "<br>" if user_name
+  img("https://twitter.com/#{screen_name}/profile_image")
+  #img(tweet[:user][:profile_image_url])
+  if obj.include?(:retweeted_status)
+    puts "<br>#{obj[:user]}<br>"
+    img("https://twitter.com/#{obj[:user]}/profile_image?size=mini")
+  end
+
+  puts "</td><td>"
+  msg = tweet[:full_text] || tweet[:text]
+  puts msg.gsub(/\n/, "<br>\n"), "<br><br>"
+  puts obj[:message].gsub(/\n/, "<br>\n"), "<br>"    
 
   tweet[:entities][:urls].each do |u|
     puts "urls", %Q(<a href="#{u[:expanded_url]}" TARGET="_blank" >#{u[:display_url]}</a>), "<br>"
