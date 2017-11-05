@@ -178,7 +178,7 @@ def message(obj)
         simg(m[:media_url]); puts "<br>"
   end end end
 
-  if tweet.include?(:extended_tweet)
+  if tweet.include?(:extended_tweet) && tweet[:extended_tweet].include?(:extended_entities)
     tweet[:extended_tweet][:extended_entities][:media].each do |m|
       if m.include?(:media_url)
         if m[:type] == "photo"
