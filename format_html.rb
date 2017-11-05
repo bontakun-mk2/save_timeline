@@ -158,9 +158,10 @@ def message(obj)
   msg = tweet[:full_text] || tweet[:text]
   puts msg.gsub(/\n/, "<br>\n"), "<br><br>"
   puts obj[:message].gsub(/\n/, "<br>\n"), "<br>"
-  puts tweet[:extended_tweet][:full_text], "<br>"
-  puts obj[:retweet], "<br>"
-
+  if obj.include?(:retweeted_status)
+    puts tweet[:extended_tweet][:full_text], "<br>" if tweet[:extended_tweet]
+    puts obj[:retweet], "<br>"
+  end
   tweet[:entities][:urls].each do |u|
     puts "urls", %Q(<a href="#{u[:expanded_url]}" TARGET="_blank" >#{u[:display_url]}</a>), "<br>"
   end
@@ -183,7 +184,7 @@ def message(obj)
 #=end
 end
 
-MOBILE=FALSE
+MOBILE=TRUE
 MAX_TWEET = MOBILE ? 100 : 500
 
 ARGF.each_with_index do |line, idx|
