@@ -162,9 +162,11 @@ def message(obj)
     puts tweet[:extended_tweet][:full_text], "<br>" if tweet[:extended_tweet]
     puts obj[:retweet], "<br>"
   end
+
   tweet[:entities][:urls].each do |u|
     puts "urls", %Q(<a href="#{u[:expanded_url]}" TARGET="_blank" >#{u[:display_url]}</a>), "<br>"
   end
+
   if tweet.include?(:extended_entities)
     tweet[:extended_entities][:media].each do |m|
       if m.include?(:media_url)
@@ -175,6 +177,18 @@ def message(obj)
         end
         simg(m[:media_url]); puts "<br>"
   end end end
+
+  if tweet.include?(:extended_tweet)
+    tweet[:extended_tweet][:extended_entities][:media].each do |m|
+      if m.include?(:media_url)
+        if m[:type] == "photo"
+          puts m[:type], m[:display_url], url(m[:media_url]), "<br>"
+        else
+          puts "!",m[:type], url("http://#{m[:display_url]}"), m[:media_url], "<br>"
+        end
+        simg(m[:media_url]); puts "<br>"
+  end end end
+
 #  4.times do |i| puts "<img src=\"img/#{tweet[:id_str]}_#{i}.png\">" end
   imgstyle = MOBILE ? "height:auto;max-width:500px;" : "width:auto;max-width:100%;max-height:800px;"
   4.times do |i| puts %Q(<img src="img/#{tweet[:id]}_#{i}.png" style="#{imgstyle}">) end
