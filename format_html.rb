@@ -155,13 +155,16 @@ def message(obj)
   end
 
   puts "</td><td>"
-  msg = tweet[:full_text] || tweet[:text]
-  puts msg.gsub(/\n/, "<br>\n"), "<br><br>"
-  puts obj[:message].gsub(/\n/, "<br>\n"), "<br>"
-  if obj.include?(:retweeted_status)
-    puts tweet[:extended_tweet][:full_text], "<br>" if tweet[:extended_tweet]
-    puts obj[:retweet], "<br>"
+  if tweet[:extended_tweet]
+  msg = tweet[:extended_tweet][:full_text] || tweet[:full_text] || tweet[:text] || obj[:message]
+  else
+  msg = tweet[:full_text] || tweet[:text] || obj[:message]
   end
+  puts msg.gsub(/\n/, "<br>\n"), "<br>----<br>"
+#  if obj.include?(:retweeted_status)
+#    puts tweet[:extended_tweet][:full_text], "<br>--full_text--<br>" if tweet[:extended_tweet]
+#    puts obj[:retweet], "<br>--retweet--<br>" if obj[:retweet] != msg
+#  end
 
   tweet[:entities][:urls].each do |u|
     puts "urls", %Q(<a href="#{u[:expanded_url]}" TARGET="_blank" >#{u[:display_url]}</a>), "<br>"
