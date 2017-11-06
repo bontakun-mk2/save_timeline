@@ -87,7 +87,7 @@ def url(url)
 def img(url)
   puts "<img src=\"#{url}\">" end
 def simg(url)
-  puts %Q(<img src="#{url}" width="5%" height="5%">) end
+  puts %Q(<img src="#{url}" width="5%" height="5%">), "<br>" if !MOBILE end
 
 def header
   puts <<END
@@ -178,7 +178,7 @@ def message(obj)
         else
           puts "!",m[:type], url("http://#{m[:display_url]}"), m[:media_url], "<br>"
         end
-        simg(m[:media_url]); puts "<br>"
+        simg(m[:media_url])
   end end end
 
   if tweet.include?(:extended_tweet) && tweet[:extended_tweet].include?(:extended_entities)
@@ -189,26 +189,29 @@ def message(obj)
         else
           puts "!",m[:type], url("http://#{m[:display_url]}"), m[:media_url], "<br>"
         end
-        simg(m[:media_url]); puts "<br>"
+        simg(m[:media_url])
   end end end
 
 #  4.times do |i| puts "<img src=\"img/#{tweet[:id_str]}_#{i}.png\">" end
-  imgstyle = MOBILE ? "height:auto;max-width:500px;" : "width:auto;max-width:100%;max-height:800px;"
-  4.times do |i| puts %Q(<img src="img/#{tweet[:id]}_#{i}.png" style="#{imgstyle}">) end
+#  imgstyle = MOBILE ? "height:auto;max-width:500px;" : "width:auto;max-width:100%;max-height:800px;"
+  if !MOBILE
+    imgstyle = "width:auto;max-width:100%;max-height:800px;"
+    4.times do |i| puts %Q(<img src="img/#{tweet[:id]}_#{i}.png" style="#{imgstyle}">) end
+  end
 #  4.times do |i| puts %Q(<img src="img/#{tweet[:id]}_#{i}.png" style="width:auto;max-height:800px;" >) end
 #  4.times do |i| puts %Q(<img src="img/#{tweet[:id]}_#{i}.png" style="height:auto;max-width:500px;" >) end
   puts "</div></td></tr>"
 #=end
 end
 
-MOBILE=TRUE
+MOBILE=FALSE
 MAX_TWEET = MOBILE ? 100 : 500
 
 ARGF.each_with_index do |line, idx|
   if idx % MAX_TWEET == 0
     filename = File.basename($FILENAME, ".*")
-    filename = "#{filename}_#{(idx/MAX_TWEET)+1}"
-    filename += MOBILE ? "_m.html" : ".html"
+    filename = "#{filename}_#{(idx/MAX_TWEET)+1}.html"
+    filename = "m_" + filename if MOBILE
     puts filename
     $stdout = File.open(filename, 'w')
     $stdout.flock(File::LOCK_EX)
@@ -221,8 +224,8 @@ ARGF.each_with_index do |line, idx|
   if (idx%MAX_TWEET) == (MAX_TWEET-1)
     puts "<tr><td></td><td></td><td>"
     filename = File.basename($FILENAME, ".*")
-    filename = "#{filename}_#{(idx/MAX_TWEET)+2}"
-    filename += MOBILE ? "_m.html" : ".html"
+    filename = "#{filename}_#{(idx/MAX_TWEET)+2}.html"
+    filename = "m_" + filename if MOBILE
     puts %Q(<a href="#{filename}">#{filename}</a> </td></tr>)
     futter
     $stdout = STDOUT   # 元に戻す    
@@ -232,8 +235,8 @@ end
 puts "<tr><td></td><td></td><td>"
 filename = File.basename($FILENAME, ".*")
 filename = (filename.to_i + 1).to_s
-filename = "#{filename}_1"
-filename += MOBILE ? "_m.html" : ".html"
+filename = "#{filename}_1.html"
+filename = "m_" + filename if MOBILE
 puts %Q(<a href="#{filename}">#{filename}</a>)
 futter
 $stdout = STDOUT   # 元に戻す    
