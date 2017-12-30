@@ -92,6 +92,7 @@ def simg(url)
 def header
   puts <<END
 <html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>Tweets #{ARGF.filename}</title>
   <style>
     table {
@@ -204,7 +205,7 @@ def message(obj)
 #=end
 end
 
-MOBILE=FALSE
+MOBILE=TRUE
 MAX_TWEET = MOBILE ? 100 : 500
 
 ARGF.each_with_index do |line, idx|
