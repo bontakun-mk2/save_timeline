@@ -14,7 +14,7 @@ Plugin.create(:save_timeline) do
   user = service.user || "default" rescue user = "default"
   
   on_update do | service, messages |
-    if BOOT_TIME.yday < Time.now.yday
+    if BOOT_TIME.yday != Time.now.yday
       filename = Time.now.strftime("%y%m%d")
     else
       filename = BOOT_TIME.strftime("%y%m%d%H%M")
