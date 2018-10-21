@@ -148,11 +148,13 @@ def message(obj)
   puts "</td><td style=\"font-size:80%\">"
   puts screen_name, "<br>"
   puts user_name, "<br>" if user_name
-  img("https://twitter.com/#{screen_name}/profile_image")
+  #img("https://twitter.com/#{screen_name}/profile_image")
+  #http://www.paper-glasses.com/api/twipi/katan_t http://140note.hitonobetsu.com/apipage/profileimage
+  img("https://furyutei.work/gadget/twicon/#{screen_name}") #https://furyu.hatenablog.com/entry/20130730/1375178609
   #img(tweet[:user][:profile_image_url])
   if obj.include?(:retweeted_status)
     puts "<br>#{obj[:user]}<br>"
-    img("https://twitter.com/#{obj[:user]}/profile_image?size=mini")
+    img("https://furyutei.work/gadget/twicon/#{obj[:user]}/mini")
   end
 
   puts "</td><td>"
